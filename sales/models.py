@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator
 from django.db import models
 
 from companies.models import Company
@@ -16,9 +17,16 @@ class Sale(models.Model):
         User, on_delete=models.SET_NULL, null=True, related_name="sales_created"
     )
     amount = models.DecimalField(
-        max_digits=10, decimal_places=2, help_text="Valor total da venda"
+        validators=[
+            MinValueValidator(1.00, "O valor da venda não pode ser menor que R$ 1.00.")
+        ],
+        max_digits=10,
+        decimal_places=2,
+        help_text="Valor total da venda",
     )
-    quantity = models.PositiveIntegerField()
+    quantity = models.PositiveIntegerField(
+        validators=[MinValueValidator(1), "A quantidade não pode ser menor que 1."]
+    )
     sale_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
