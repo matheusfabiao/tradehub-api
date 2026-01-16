@@ -25,7 +25,7 @@ class Sale(models.Model):
         help_text="Valor total da venda",
     )
     quantity = models.PositiveIntegerField(
-        validators=[MinValueValidator(1), "A quantidade não pode ser menor que 1."]
+        validators=[MinValueValidator(1, "A quantidade não pode ser menor que 1.")]
     )
     sale_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
