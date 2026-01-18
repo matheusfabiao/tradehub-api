@@ -4,6 +4,7 @@ from companies.models import Company
 
 
 class Customer(models.Model):
+    """Modelo que representa um cliente."""
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     email = models.EmailField(max_length=255)
@@ -14,6 +15,7 @@ class Customer(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
+        """Configurações do modelo."""
         ordering = ["name"]
         verbose_name = "Customer"
         verbose_name_plural = "Customers"
@@ -23,4 +25,5 @@ class Customer(models.Model):
         ]
 
     def __str__(self):
+        """Devolve uma representação em string do modelo."""
         return self.name

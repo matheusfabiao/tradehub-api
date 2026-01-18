@@ -8,6 +8,7 @@ from products.models import Product
 
 
 class Sale(models.Model):
+    """Modelo que representa uma venda."""
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name="sales")
     product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name="sales")
     customer = models.ForeignKey(
@@ -32,6 +33,7 @@ class Sale(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
+        """Configurações do modelo."""
         indexes = [
             models.Index(fields=["company"]),
             models.Index(fields=["sale_date"]),
@@ -41,4 +43,5 @@ class Sale(models.Model):
         ordering = ["-sale_date"]
 
     def __str__(self):
+        """Devolve uma representação em string do modelo."""
         return f"Sale #{self.id} - {self.company.name}"
