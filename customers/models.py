@@ -5,6 +5,7 @@ from companies.models import Company
 
 class Customer(models.Model):
     """Modelo que representa um cliente."""
+
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     email = models.EmailField(max_length=255)
@@ -16,6 +17,7 @@ class Customer(models.Model):
 
     class Meta:
         """Configurações do modelo."""
+
         ordering = ["name"]
         verbose_name = "Customer"
         verbose_name_plural = "Customers"

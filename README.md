@@ -1,6 +1,6 @@
 # TradeHub API
 
-A RESTful platform for managing multi-company e-commerce operations, built with Django and Django REST Framework. This API provides endpoints for managing companies, products, customers, and sales.
+A RESTful platform for managing multi-company e-commerce operations, built with Django and Django REST Framework. This API provides endpoints for managing companies, products, customers, and sales, with JWT authentication for secure access.
 
 ## Table of Contents
 
@@ -8,6 +8,7 @@ A RESTful platform for managing multi-company e-commerce operations, built with 
 - [Technologies](#technologies)
 - [Installation](#installation)
 - [Configuration](#configuration)
+- [Authentication](#authentication)
 - [API Endpoints](#api-endpoints)
 - [Database Schema](#database-schema)
 - [Usage](#usage)
@@ -16,6 +17,7 @@ A RESTful platform for managing multi-company e-commerce operations, built with 
 
 ## Features
 
+- **Authentication**: JWT-based authentication for secure access to the API.
 - **Company Management**: Create, read, update, and delete companies.
 - **Product Management**: Manage products with SKU, pricing, and availability.
 - **Customer Management**: Track customer information and purchase history.
@@ -28,6 +30,7 @@ A RESTful platform for managing multi-company e-commerce operations, built with 
 
 - **Django**: A high-level Python web framework.
 - **Django REST Framework**: A powerful and flexible toolkit for building Web APIs.
+- **Django REST Framework SimpleJWT**: For JWT authentication.
 - **SQLite**: Default database for development (configurable for production).
 - **Python Decouple**: For managing environment variables.
 - **Dj-Database-URL**: For parsing database URLs.
@@ -99,9 +102,61 @@ ALLOWED_HOSTS=localhost,127.0.0.1
 DATABASE_URL=sqlite:///db.sqlite3
 ```
 
+## Authentication
+
+This API uses JWT (JSON Web Token) for authentication. The following endpoints are available for authentication:
+
+- **Obtain Token**: `POST /api/v1/authentication/token/`
+- **Refresh Token**: `POST /api/v1/authentication/token/refresh/`
+- **Verify Token**: `POST /api/v1/authentication/token/verify/`
+
+### Token Configuration
+
+- **Access Token Lifetime**: 5 minutes
+- **Refresh Token Lifetime**: 1 day
+
+### Example: Obtain Token
+
+```bash
+curl -X POST http://localhost:8000/api/v1/authentication/token/ \
+  -H "Content-Type: application/json" \
+  -d '{"username": "your_username", "password": "your_password"}'
+```
+
+### Example: Refresh Token
+
+```bash
+curl -X POST http://localhost:8000/api/v1/authentication/token/refresh/ \
+  -H "Content-Type: application/json" \
+  -d '{"refresh": "your_refresh_token"}'
+```
+
+### Example: Verify Token
+
+```bash
+curl -X POST http://localhost:8000/api/v1/authentication/token/verify/ \
+  -H "Content-Type: application/json" \
+  -d '{"token": "your_access_token"}'
+```
+
+### Using the Token
+
+Once you have obtained a token, include it in the `Authorization` header of your requests:
+
+```bash
+curl -X GET http://localhost:8000/api/v1/companies/ \
+  -H "Authorization: Bearer your_access_token"
+```
+
 ## API Endpoints
 
 The API is versioned under `/api/v1/`. Below are the available endpoints:
+
+### Authentication
+
+- **Obtain Token**: `POST /api/v1/authentication/token/`
+- **Refresh Token**: `POST /api/v1/authentication/token/refresh/`
+- **Verify Token**: `POST /api/v1/authentication/token/verify/`
 
 ### Companies
 
@@ -218,32 +273,44 @@ erDiagram
 
 ### Example Requests
 
-#### Create a Company
+#### Obtain JWT Token
+
+```bash
+curl -X POST http://localhost:8000/api/v1/authentication/token/ \
+  -H "Content-Type: application/json" \
+  -d '{"username": "admin", "password": "admin123"}'
+```
+
+#### Create a Company (Authenticated)
 
 ```bash
 curl -X POST http://localhost:8000/api/v1/companies/ \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer your_access_token" \
   -d '{"name": "Tech Corp", "document": "123456789", "industry": "Technology"}'
 ```
 
-#### List All Companies
+#### List All Companies (Authenticated)
 
 ```bash
-curl -X GET http://localhost:8000/api/v1/companies/
+curl -X GET http://localhost:8000/api/v1/companies/ \
+  -H "Authorization: Bearer your_access_token"
 ```
 
-#### Create a Product
+#### Create a Product (Authenticated)
 
 ```bash
 curl -X POST http://localhost:8000/api/v1/products/ \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer your_access_token" \
   -d '{"name": "Laptop", "sku": "LAP123", "price": 999.99, "company": 1}'
 ```
 
-#### List All Products
+#### List All Products (Authenticated)
 
 ```bash
-curl -X GET http://localhost:8000/api/v1/products/
+curl -X GET http://localhost:8000/api/v1/products/ \
+  -H "Authorization: Bearer your_access_token"
 ```
 
 ## Contributing

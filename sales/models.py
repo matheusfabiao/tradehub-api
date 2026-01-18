@@ -9,6 +9,7 @@ from products.models import Product
 
 class Sale(models.Model):
     """Modelo que representa uma venda."""
+
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name="sales")
     product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name="sales")
     customer = models.ForeignKey(
@@ -34,6 +35,7 @@ class Sale(models.Model):
 
     class Meta:
         """Configurações do modelo."""
+
         indexes = [
             models.Index(fields=["company"]),
             models.Index(fields=["sale_date"]),

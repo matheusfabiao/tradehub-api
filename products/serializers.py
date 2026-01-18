@@ -5,11 +5,13 @@ from products.models import Product
 
 class ProductSerializer(serializers.ModelSerializer):
     """Serializer para o modelo Product."""
+
     total_revenue = serializers.SerializerMethodField(read_only=True)
     total_sold = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         """Configurações do serializer."""
+
         model = Product
         fields = "__all__"
 

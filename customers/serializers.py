@@ -5,11 +5,13 @@ from customers.models import Customer
 
 class CustomerSerializer(serializers.ModelSerializer):
     """Serializer para o modelo Customer."""
+
     total_spent = serializers.SerializerMethodField(read_only=True)
     total_purchases = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         """Configurações do serializer."""
+
         model = Customer
         fields = "__all__"
 

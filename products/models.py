@@ -6,6 +6,7 @@ from companies.models import Company
 
 class Product(models.Model):
     """Modelo que representa um produto."""
+
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     sku = models.CharField(
@@ -24,6 +25,7 @@ class Product(models.Model):
 
     class Meta:
         """Configurações do modelo."""
+
         ordering = ["name"]
         unique_together = ("company", "sku")
         verbose_name = "Product"

@@ -5,11 +5,13 @@ from companies.models import Company
 
 class CompanySerializer(serializers.ModelSerializer):
     """Serializer para o modelo Company."""
+
     total_revanue = serializers.SerializerMethodField(read_only=True)
     total_sales = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         """Configurações do serializer."""
+
         model = Company
         fields = "__all__"
 
