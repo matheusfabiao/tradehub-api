@@ -1,6 +1,6 @@
 # TradeHub API
 
-A RESTful platform for managing multi-company e-commerce operations, built with Django and Django REST Framework. This API provides endpoints for managing companies, products, customers, and sales, with JWT authentication for secure access.
+A RESTful platform for managing multi-company e-commerce operations, built with Django and Django REST Framework. This API provides endpoints for managing companies, products, customers, and sales, with JWT authentication and fine-grained permissions for secure access.
 
 ## Table of Contents
 
@@ -9,6 +9,7 @@ A RESTful platform for managing multi-company e-commerce operations, built with 
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Authentication](#authentication)
+- [Permissions](#permissions)
 - [API Endpoints](#api-endpoints)
 - [Database Schema](#database-schema)
 - [Usage](#usage)
@@ -18,6 +19,7 @@ A RESTful platform for managing multi-company e-commerce operations, built with 
 ## Features
 
 - **Authentication**: JWT-based authentication for secure access to the API.
+- **Permissions**: Fine-grained permissions for controlling access to resources.
 - **Company Management**: Create, read, update, and delete companies.
 - **Product Management**: Manage products with SKU, pricing, and availability.
 - **Customer Management**: Track customer information and purchase history.
@@ -147,6 +149,62 @@ Once you have obtained a token, include it in the `Authorization` header of your
 curl -X GET http://localhost:8000/api/v1/companies/ \
   -H "Authorization: Bearer your_access_token"
 ```
+
+## Permissions
+
+This API uses Django's built-in permission system to control access to resources. The `GlobalDefaultPermission` class ensures that users have the appropriate permissions to perform actions on specific models.
+
+### Permission Mapping
+
+The permissions are mapped as follows:
+
+- **GET**: `view_<model>`
+- **POST**: `add_<model>`
+- **PUT**: `change_<model>`
+- **PATCH**: `change_<model>`
+- **DELETE**: `delete_<model>`
+
+### Example Permissions
+
+- **Company**: `companies.view_company`, `companies.add_company`, `companies.change_company`, `companies.delete_company`
+- **Product**: `products.view_product`, `products.add_product`, `products.change_product`, `products.delete_product`
+- **Customer**: `customers.view_customer`, `customers.add_customer`, `customers.change_customer`, `customers.delete_customer`
+- **Sale**: `sales.view_sale`, `sales.add_sale`, `sales.change_sale`, `sales.delete_sale`
+
+### Assigning Permissions
+
+To assign permissions to a user, you can use the Django admin interface or the following command:
+
+```bash
+python manage.py shell
+```
+
+```python
+from django.contrib.auth.models import User, Permission
+from django.contrib.contenttypes.models import ContentType
+
+# Get the user
+user = User.objects.get(username='your_username')
+
+# Get the content type for the model
+content_type = ContentType.objects.get(app_label='companies', model='company')
+
+# Get the permission
+permission = Permission.objects.get(content_type=content_type, codename='view_company')
+
+# Assign the permission to the user
+user.user_permissions.add(permission)
+```
+
+### Checking Permissions
+
+To check if a user has a specific permission, you can use the following:
+
+```python
+user.has_perm('companies.view_company')
+```
+
+This will return `True` if the user has the permission, and `False` otherwise.
 
 ## API Endpoints
 
