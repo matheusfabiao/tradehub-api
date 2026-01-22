@@ -9,4 +9,9 @@ urlpatterns = [
         views.SaleRetrieveUpdateDestroyView.as_view(),
         name="sale_retrieve_update_destroy",
     ),
+    path(
+        "sales/stats/",
+        views.SaleStatsView.as_view(),
+        name="sale_stats",
+    ),
 ]

@@ -18,13 +18,12 @@ class Sale(models.Model):
     created_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, related_name="sales_created"
     )
-    amount = models.DecimalField(
+    unit_price = models.DecimalField(
         validators=[
-            MinValueValidator(1.00, "O valor da venda não pode ser menor que R$ 1.00.")
+            MinValueValidator(0.01, "O preço unitário não pode ser menor que R$ 0.01.")
         ],
         max_digits=10,
         decimal_places=2,
-        help_text="Valor total da venda",
     )
     quantity = models.PositiveIntegerField(
         validators=[MinValueValidator(1, "A quantidade não pode ser menor que 1.")]
@@ -36,14 +35,21 @@ class Sale(models.Model):
     class Meta:
         """Configurações do modelo."""
 
+        ordering = ["-sale_date"]
         indexes = [
             models.Index(fields=["company"]),
             models.Index(fields=["sale_date"]),
             models.Index(fields=["product"]),
             models.Index(fields=["customer"]),
         ]
-        ordering = ["-sale_date"]
+
+    @property
+    def total(self):
+        """Calcula o total da venda"""
+        if self.unit_price and self.quantity:
+            return self.unit_price * self.quantity
+        return 0
 
     def __str__(self):
         """Devolve uma representação em string do modelo."""
-        return f"Sale #{self.id} - {self.company.name}"
+        return f"Sale #{self.id} - {self.company.name} - R${self.total}"

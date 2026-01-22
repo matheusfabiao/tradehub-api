@@ -11,7 +11,7 @@ class SaleAdmin(admin.ModelAdmin):
         "product",
         "customer",
         "created_by",
-        "amount",
+        "unit_price",
         "quantity",
         "sale_date",
         "created_at",
